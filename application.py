@@ -11,7 +11,7 @@ import torch
 from diffusers import StableDiffusionPipeline 
 
 # Import PIL for image handling
-from PIL import Image, ImageTk 
+from PIL import ImageTk 
 
 # Import the authentication token from a file
 from authtoken import auth_token  
@@ -63,9 +63,17 @@ def generate():
         output = pipe(prompt.get(), guidance_scale=8.5)
 
     image = output.images[0]
+    
+    # Ensure the image is in RGB format (sometimes PIL converts it to grayscale)
+    if image.mode != "RGB":
+        image = image.convert("RGB")
 
-    # Convert the image to a PhotoImage for Tkinter
-    img = ImageTk.PhotoImage(image)  
+    # # Convert the image to a PhotoImage for Tkinter
+    # img = ImageTk.PhotoImage(image)
+    
+    # we are using CTKImage instead of ImageTk.PhotoImage to scaled on HighDPI displays
+    # Convert the generated image (PIL Image) to a format compatible with CTkImage    
+    img = ctk.CTkImage(light_image=image, size=(512, 512))  # Adjust the size if necessary
 
     # Keep a reference to the image to prevent garbage collection
     lmain.image = img 

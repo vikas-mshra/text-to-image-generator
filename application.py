@@ -63,7 +63,9 @@ def generate():
         output = pipe(prompt.get(), guidance_scale=8.5)
 
     image = output.images[0]
-    
+    # Before converting, check the mode of the image (should be "RGB")
+    print(image.mode)  
+
     # Ensure the image is in RGB format (sometimes PIL converts it to grayscale)
     if image.mode != "RGB":
         image = image.convert("RGB")

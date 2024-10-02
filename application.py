@@ -30,13 +30,13 @@ app.title("Text-to-Image Generator")
 ctk.set_appearance_mode("dark")  
 
 # Create an entry widget for the prompt text input
-prompt = ctk.CTkEntry(height=40, width=512, text_font=("Arial", 20), text_color="black", fg_color="white")
+prompt = ctk.CTkEntry(master=app, height=40, width=512, font=("Arial", 20), text_color="black", fg_color="white")
 
 # Place the entry widget at coordinates (10, 10)
 prompt.place(x=10, y=10)  
 
 # Create a label widget for displaying the generated image
-lmain = ctk.CTkLabel(height=512, width=512)
+lmain = ctk.CTkLabel(master=app, height=512, width=512)
 
 # Place the label widget at coordinates (10, 110)
 lmain.place(x=10, y=110)  
@@ -60,7 +60,9 @@ def generate():
     with torch.no_grad():  
         
         # Generate the image with guidance scale
-        image = pipe(prompt.get(), guidance_scale=8.5)["sample"][0]  
+        output = pipe(prompt.get(), guidance_scale=8.5)
+
+    image = output.images[0]
 
     # Convert the image to a PhotoImage for Tkinter
     img = ImageTk.PhotoImage(image)  
@@ -69,10 +71,10 @@ def generate():
     lmain.image = img 
 
     # Update the label widget with the new image
-    lmain.configure(image=img)  
+    lmain.configure(image=img, text="By - Vikas")  
 
 # Create a button widget to trigger the image generation
-trigger = ctk.CTkButton(height=40, width=120, text_font=("Arial", 20), text_color="white", fg_color="black", command=generate)
+trigger = ctk.CTkButton(master=app, height=40, width=120, font=("Arial", 20), text_color="white", fg_color="black", command=generate)
 
 # Set the text on the button to "Generate"
 trigger.configure(text="Generate")  
